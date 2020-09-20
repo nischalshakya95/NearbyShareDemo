@@ -2,6 +2,6 @@
     <string name="app_name">NearbyShareDemo</string>
     <string name="advertise">Advertise</string>
     <string name="discover">Discover</string>
-    <string name="stop_adversiting">Stop Adversiting</string>
+    <string name="stop_advertising">Stop Adversiting</string>
     <string name="stop_discovering">Stop Discovering</string>
 </resources>

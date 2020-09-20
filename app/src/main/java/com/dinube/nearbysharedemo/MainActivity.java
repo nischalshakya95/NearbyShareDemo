@@ -1,10 +1,11 @@
 package com.dinube.nearbysharedemo;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
-import android.widget.Button;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,17 +40,26 @@ public class MainActivity extends AppCompatActivity {
         context = getApplicationContext();
         endpointName = Build.MODEL;
 
-        Button startAdvertising = findViewById(R.id.advertise);
-        startAdvertising.setOnClickListener(click -> startAdvertising());
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch advertiseSwitch = findViewById(R.id.advertiseSwitch);
+        advertiseSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                startAdvertising();
+            } else {
+                stopAdvertising();
+            }
+        });
 
-        Button stopAdvertising = findViewById(R.id.stopAdversiting);
-        stopAdvertising.setOnClickListener(click -> stopAdvertising());
+        @SuppressLint("UseSwitchCompatOrMaterialCode")
+        Switch discoverSwitch = findViewById(R.id.discoverSwitch);
+        discoverSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                startDiscovering();
+            } else {
+                stopDiscovering();
+            }
+        });
 
-        Button startDiscovering = findViewById(R.id.discover);
-        startDiscovering.setOnClickListener(click -> startDiscovering());
-
-        Button stopDiscovering = findViewById(R.id.stopDiscovering);
-        stopDiscovering.setOnClickListener(click -> stopDiscovering());
     }
 
     private final EndpointDiscoveryCallback endpointDiscoveryCallback = new EndpointDiscoveryCallback() {
