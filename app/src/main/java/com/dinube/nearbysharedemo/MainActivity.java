@@ -11,7 +11,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.dinube.nearbysharedemo.fragment.EndpointsListAdapter;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.AdvertisingOptions;
 import com.google.android.gms.nearby.connection.ConnectionInfo;
@@ -26,11 +29,16 @@ import com.google.android.gms.nearby.connection.PayloadCallback;
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 import com.google.android.gms.nearby.connection.Strategy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private Context context;
 
     private String endpointName;
+
+    private final List<String> endpoints = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +70,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void generateDataList(List<String> endpoints) {
+        RecyclerView recyclerView = findViewById(R.id.endpointsRecyclerView);
+        EndpointsListAdapter adapter = new EndpointsListAdapter(this, endpoints);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+    }
+
     private final EndpointDiscoveryCallback endpointDiscoveryCallback = new EndpointDiscoveryCallback() {
         @Override
         public void onEndpointFound(@NonNull String s, @NonNull DiscoveredEndpointInfo discoveredEndpointInfo) {
@@ -87,22 +103,24 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onConnectionInitiated(@NonNull String endpointId, @NonNull ConnectionInfo connectionInfo) {
             showToast("Endpoints ", connectionInfo.getEndpointName());
-            new AlertDialog.Builder(MainActivity.this)
-                    .setTitle("Accept connection to " + connectionInfo.getEndpointName())
-                    .setMessage("Confirm the code matches on both devices: " + connectionInfo.getAuthenticationToken())
-                    .setPositiveButton(
-                            "Accept",
-                            (DialogInterface dialog, int which) ->
-                                    // The user confirmed, so we can accept the connection.
-                                    Nearby.getConnectionsClient(context)
-                                            .acceptConnection(endpointId, payloadCallback))
-                    .setNegativeButton(
-                            android.R.string.cancel,
-                            (DialogInterface dialog, int which) ->
-                                    // The user canceled, so we should reject the connection.
-                                    Nearby.getConnectionsClient(context).rejectConnection(endpointId))
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+            endpoints.add(connectionInfo.getEndpointName());
+            generateDataList(endpoints);
+//            new AlertDialog.Builder(MainActivity.this)
+//                    .setTitle("Accept connection to " + connectionInfo.getEndpointName())
+//                    .setMessage("Confirm the code matches on both devices: " + connectionInfo.getAuthenticationToken())
+//                    .setPositiveButton(
+//                            "Accept",
+//                            (DialogInterface dialog, int which) ->
+//                                    // The user confirmed, so we can accept the connection.
+//                                    Nearby.getConnectionsClient(context)
+//                                            .acceptConnection(endpointId, payloadCallback))
+//                    .setNegativeButton(
+//                            android.R.string.cancel,
+//                            (DialogInterface dialog, int which) ->
+//                                    // The user canceled, so we should reject the connection.
+//                                    Nearby.getConnectionsClient(context).rejectConnection(endpointId))
+//                    .setIcon(android.R.drawable.ic_dialog_alert)
+//                    .show();
         }
 
         @Override
