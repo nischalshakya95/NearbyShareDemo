@@ -10,16 +10,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.dinube.nearbysharedemo.R;
+import com.dinube.nearbysharedemo.nearby.NearbyModel;
 
 import java.util.List;
 
 public class EndpointsListAdapter extends RecyclerView.Adapter<EndpointsListAdapter.RecyclerViewHolder> {
 
-    private List<String> endpoints;
+    private List<NearbyModel> endpoints;
 
     private View.OnClickListener onClickListener;
 
-    public EndpointsListAdapter(Context context, List<String> endpoints) {
+    public EndpointsListAdapter(Context context, List<NearbyModel> endpoints) {
         this.endpoints = endpoints;
     }
 
@@ -37,7 +38,7 @@ public class EndpointsListAdapter extends RecyclerView.Adapter<EndpointsListAdap
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
-        holder.textView.setText(endpoints.get(position));
+        holder.textView.setText(endpoints.get(position).getEndpointName());
     }
 
     @Override

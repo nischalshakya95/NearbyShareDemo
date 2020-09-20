@@ -34,7 +34,7 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
 
     private String endpointId;
 
-    private final List<String> endpoints = new ArrayList<>();
+    private final List<NearbyModel> endpoints = new ArrayList<>();
 
     public NearbyConnectionLifeCycleCallback(Context context, RecyclerView recyclerView) {
         this.context = context;
@@ -44,7 +44,7 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
     @Override
     public void onConnectionInitiated(@NonNull String endpointId, @NonNull ConnectionInfo connectionInfo) {
         UiUtils.showToast(context, "Endpoints ", connectionInfo.getEndpointName());
-        endpoints.add(endpointId);
+        endpoints.add(new NearbyModel(connectionInfo.getEndpointName(), endpointId));
         generateDataList(endpoints);
         this.connectionInfo = connectionInfo;
     }
@@ -66,7 +66,7 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
         }
     }
 
-    private void generateDataList(List<String> endpoints) {
+    private void generateDataList(List<NearbyModel> endpoints) {
         EndpointsListAdapter adapter = new EndpointsListAdapter(context, endpoints);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
@@ -77,7 +77,7 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
 
     private View.OnClickListener onClickListener = view -> {
         RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
-        this.endpointId = endpoints.get(viewHolder.getAdapterPosition());
+        this.endpointId = endpoints.get(viewHolder.getAdapterPosition()).getEndpointId();
         new AlertDialog.Builder(context)
                 .setTitle("Accept connection to " + connectionInfo.getEndpointName())
                 .setMessage("Confirm the code matches on both devices: " + connectionInfo.getAuthenticationToken())
