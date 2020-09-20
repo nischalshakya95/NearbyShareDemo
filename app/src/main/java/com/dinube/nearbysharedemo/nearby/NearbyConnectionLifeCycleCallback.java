@@ -66,6 +66,11 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
         }
     }
 
+    @Override
+    public void onDisconnected(@NonNull String s) {
+        UiUtils.showToast(context, "We've been disconnected from the endpoint. No more data can be send or received.");
+    }
+
     private void generateDataList(List<NearbyModel> endpoints) {
         EndpointsListAdapter adapter = new EndpointsListAdapter(context, endpoints);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
@@ -95,11 +100,6 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     };
-
-    @Override
-    public void onDisconnected(@NonNull String s) {
-        UiUtils.showToast(context, "We've been disconnected from the endpoint. No more data can be send or received.");
-    }
 
     static class NearbyPayloadCallback extends PayloadCallback {
 
