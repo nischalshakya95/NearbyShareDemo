@@ -52,6 +52,7 @@ public class EndpointsListAdapter extends RecyclerView.Adapter<EndpointsListAdap
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.endpointsName);
+            itemView.setTag(this);
             itemView.setOnClickListener(onClickListener);
         }
     }

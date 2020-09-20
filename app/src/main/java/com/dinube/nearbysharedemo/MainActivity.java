@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
                 startAdvertising();
             } else {
                 stopAdvertising();
+                endpoints.clear();
+                generateDataList(endpoints);
             }
         });
 
@@ -70,8 +72,15 @@ public class MainActivity extends AppCompatActivity {
                 startDiscovering();
             } else {
                 stopDiscovering();
+                endpoints.clear();
+                generateDataList(endpoints);
             }
         });
+    }
+
+    private void generateDataList(List<String> endpoints) {
+        RecyclerView recyclerView = findViewById(R.id.endpointsRecyclerView);
+        recyclerView.removeAllViews();
     }
 
     private final EndpointDiscoveryCallback endpointDiscoveryCallback = new EndpointDiscoveryCallback() {
@@ -123,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
         private View.OnClickListener onClickListener = view -> {
             RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
             String endpoint = endpoints.get(viewHolder.getAdapterPosition());
-            showToast("Click on ", endpoint);
             new AlertDialog.Builder(MainActivity.this)
                     .setTitle("Accept connection to " + connectionInfo.getEndpointName())
                     .setMessage("Confirm the code matches on both devices: " + connectionInfo.getAuthenticationToken())
