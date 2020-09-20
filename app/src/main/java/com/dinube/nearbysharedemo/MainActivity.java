@@ -1,15 +1,16 @@
 package com.dinube.nearbysharedemo;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
 
     private final List<String> endpoints = new ArrayList<>();
 
+    private ConnectionInfo connection;
+
+    private String endId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,15 +72,6 @@ public class MainActivity extends AppCompatActivity {
                 stopDiscovering();
             }
         });
-
-    }
-
-    private void generateDataList(List<String> endpoints) {
-        RecyclerView recyclerView = findViewById(R.id.endpointsRecyclerView);
-        EndpointsListAdapter adapter = new EndpointsListAdapter(this, endpoints);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
     }
 
     private final EndpointDiscoveryCallback endpointDiscoveryCallback = new EndpointDiscoveryCallback() {
@@ -100,28 +96,51 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private final ConnectionLifecycleCallback connectionLifecycleCallback = new ConnectionLifecycleCallback() {
+
+        private ConnectionInfo connectionInfo;
+
+        private String endpointId;
+
         @Override
         public void onConnectionInitiated(@NonNull String endpointId, @NonNull ConnectionInfo connectionInfo) {
             showToast("Endpoints ", connectionInfo.getEndpointName());
             endpoints.add(connectionInfo.getEndpointName());
             generateDataList(endpoints);
-//            new AlertDialog.Builder(MainActivity.this)
-//                    .setTitle("Accept connection to " + connectionInfo.getEndpointName())
-//                    .setMessage("Confirm the code matches on both devices: " + connectionInfo.getAuthenticationToken())
-//                    .setPositiveButton(
-//                            "Accept",
-//                            (DialogInterface dialog, int which) ->
-//                                    // The user confirmed, so we can accept the connection.
-//                                    Nearby.getConnectionsClient(context)
-//                                            .acceptConnection(endpointId, payloadCallback))
-//                    .setNegativeButton(
-//                            android.R.string.cancel,
-//                            (DialogInterface dialog, int which) ->
-//                                    // The user canceled, so we should reject the connection.
-//                                    Nearby.getConnectionsClient(context).rejectConnection(endpointId))
-//                    .setIcon(android.R.drawable.ic_dialog_alert)
-//                    .show();
+            this.connectionInfo = connectionInfo;
+            this.endpointId = endpointId;
         }
+
+        private void generateDataList(List<String> endpoints) {
+            RecyclerView recyclerView = findViewById(R.id.endpointsRecyclerView);
+            EndpointsListAdapter adapter = new EndpointsListAdapter(context, endpoints);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setAdapter(adapter);
+            adapter.onSetClickListener(onClickListener);
+        }
+
+
+        private View.OnClickListener onClickListener = view -> {
+            RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
+            String endpoint = endpoints.get(viewHolder.getAdapterPosition());
+            showToast("Click on ", endpoint);
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Accept connection to " + connectionInfo.getEndpointName())
+                    .setMessage("Confirm the code matches on both devices: " + connectionInfo.getAuthenticationToken())
+                    .setPositiveButton(
+                            "Accept",
+                            (DialogInterface dialog, int which) ->
+                                    // The user confirmed, so we can accept the connection.
+                                    Nearby.getConnectionsClient(context)
+                                            .acceptConnection(endId, payloadCallback))
+                    .setNegativeButton(
+                            android.R.string.cancel,
+                            (DialogInterface dialog, int which) ->
+                                    // The user canceled, so we should reject the connection.
+                                    Nearby.getConnectionsClient(context).rejectConnection(endpointId))
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        };
 
         @Override
         public void onConnectionResult(@NonNull String s, @NonNull ConnectionResolution connectionResolution) {
@@ -146,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private PayloadCallback payloadCallback =
+    public PayloadCallback payloadCallback =
             new PayloadCallback() {
                 @Override
                 public void onPayloadReceived(@NonNull String endpointId, Payload payload) {
