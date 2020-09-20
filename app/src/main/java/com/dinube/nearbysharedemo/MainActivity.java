@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        context = getApplicationContext();
+        context = this;
         endpointName = Build.MODEL;
         recyclerView = findViewById(R.id.endpointsRecyclerView);
 
