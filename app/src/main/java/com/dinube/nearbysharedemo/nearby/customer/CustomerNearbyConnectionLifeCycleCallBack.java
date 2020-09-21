@@ -1,4 +1,4 @@
-package com.dinube.nearbysharedemo.nearby;
+package com.dinube.nearbysharedemo.nearby.customer;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -7,10 +7,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dinube.nearbysharedemo.fragment.EndpointsListAdapter;
+import com.dinube.nearbysharedemo.nearby.NearbyModel;
 import com.dinube.nearbysharedemo.utils.UiUtils;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.connection.ConnectionInfo;
@@ -24,11 +23,9 @@ import com.google.android.gms.nearby.connection.PayloadTransferUpdate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallback {
+public class CustomerNearbyConnectionLifeCycleCallBack extends ConnectionLifecycleCallback {
 
     private Context context;
-
-    private RecyclerView recyclerView;
 
     private ConnectionInfo connectionInfo;
 
@@ -36,16 +33,30 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
 
     private final List<NearbyModel> endpoints = new ArrayList<>();
 
-    public NearbyConnectionLifeCycleCallback(Context context, RecyclerView recyclerView) {
+    public CustomerNearbyConnectionLifeCycleCallBack(Context context) {
         this.context = context;
-        this.recyclerView = recyclerView;
     }
 
     @Override
     public void onConnectionInitiated(@NonNull String endpointId, @NonNull ConnectionInfo connectionInfo) {
         UiUtils.showToast(context, "Endpoints ", connectionInfo.getEndpointName());
         endpoints.add(new NearbyModel(connectionInfo.getEndpointName(), endpointId));
-        generateDataList(endpoints);
+        new AlertDialog.Builder(context)
+                .setTitle("Accept connection from " + connectionInfo.getEndpointName())
+                .setMessage("Confirm the code matches on both devices: " + connectionInfo.getAuthenticationToken())
+                .setPositiveButton(
+                        "Accept",
+                        (DialogInterface dialog, int which) ->
+                                // The user confirmed, so we can accept the connection.
+                                Nearby.getConnectionsClient(context)
+                                        .acceptConnection(endpointId, new NearbyPayloadCallback(context)))
+                .setNegativeButton(
+                        android.R.string.cancel,
+                        (DialogInterface dialog, int which) ->
+                                // The user canceled, so we should reject the connection.
+                                Nearby.getConnectionsClient(context).rejectConnection(this.endpointId))
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
         this.connectionInfo = connectionInfo;
 
     }
@@ -73,14 +84,6 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
         UiUtils.showToast(context, "We've been disconnected from the endpoint. No more data can be send or received.");
     }
 
-    private void generateDataList(List<NearbyModel> endpoints) {
-        EndpointsListAdapter adapter = new EndpointsListAdapter(context, endpoints);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-        adapter.onSetClickListener(onClickListener);
-    }
-
 
     private View.OnClickListener onClickListener = view -> {
         RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
@@ -93,7 +96,7 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
                         (DialogInterface dialog, int which) ->
                                 // The user confirmed, so we can accept the connection.
                                 Nearby.getConnectionsClient(context)
-                                        .acceptConnection(endpointId, new NearbyPayloadCallback(context)))
+                                        .acceptConnection(endpointId, new CustomerNearbyConnectionLifeCycleCallBack.NearbyPayloadCallback(context)))
                 .setNegativeButton(
                         android.R.string.cancel,
                         (DialogInterface dialog, int which) ->
