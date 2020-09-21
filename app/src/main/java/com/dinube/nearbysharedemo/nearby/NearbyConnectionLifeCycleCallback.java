@@ -32,7 +32,7 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
 
     private ConnectionInfo connectionInfo;
 
-    private String endpointId;
+    private static String endpointId;
 
     private final List<NearbyModel> endpoints = new ArrayList<>();
 
@@ -45,17 +45,37 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
     public void onConnectionInitiated(@NonNull String endpointId, @NonNull ConnectionInfo connectionInfo) {
         UiUtils.showToast(context, "Endpoints ", connectionInfo.getEndpointName());
         endpoints.add(new NearbyModel(connectionInfo.getEndpointName(), endpointId));
-        generateDataList(endpoints);
         this.connectionInfo = connectionInfo;
+        NearbyConnectionLifeCycleCallback.endpointId = endpointId;
+//        generateDataList(endpoints);
+        new AlertDialog.Builder(context)
+                .setTitle("Accept connection to " + connectionInfo.getEndpointName())
+                .setMessage("Confirm the code matches on both devices: " + connectionInfo.getAuthenticationToken())
+                .setPositiveButton(
+                        "Accept",
+                        (DialogInterface dialog, int which) ->
+                                // The user confirmed, so we can accept the connection.
+                                Nearby.getConnectionsClient(context)
+                                        .acceptConnection(endpointId, new NearbyPayloadCallback(context)))
+                .setNegativeButton(
+                        android.R.string.cancel,
+                        (DialogInterface dialog, int which) ->
+                                // The user canceled, so we should reject the connection.
+                                Nearby.getConnectionsClient(context).rejectConnection(endpointId))
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
 
+    public static void sendMessage(String message, Context context){
+        Nearby.getConnectionsClient(context).sendPayload(endpointId, Payload.fromBytes(message.getBytes()));
     }
 
     @Override
     public void onConnectionResult(@NonNull String s, @NonNull ConnectionResolution connectionResolution) {
         switch (connectionResolution.getStatus().getStatusCode()) {
             case ConnectionsStatusCodes.STATUS_OK:
-                Payload bytesPayload = Payload.fromBytes("We're connected! Can now start sending and receiving data".getBytes());
-                Nearby.getConnectionsClient(context).sendPayload(endpointId, bytesPayload);
+                Payload bytesPayload = Payload.fromBytes("Connection established".getBytes());
+                Nearby.getConnectionsClient(context).sendPayload(s, bytesPayload);
                 break;
             case ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED:
                 Toast.makeText(context, "Connection rejected", Toast.LENGTH_SHORT).show();
@@ -84,7 +104,7 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
 
     private View.OnClickListener onClickListener = view -> {
         RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) view.getTag();
-        this.endpointId = endpoints.get(viewHolder.getAdapterPosition()).getEndpointId();
+        endpointId = endpoints.get(viewHolder.getAdapterPosition()).getEndpointId();
         new AlertDialog.Builder(context)
                 .setTitle("Accept connection to " + connectionInfo.getEndpointName())
                 .setMessage("Confirm the code matches on both devices: " + connectionInfo.getAuthenticationToken())
@@ -98,7 +118,7 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
                         android.R.string.cancel,
                         (DialogInterface dialog, int which) ->
                                 // The user canceled, so we should reject the connection.
-                                Nearby.getConnectionsClient(context).rejectConnection(this.endpointId))
+                                Nearby.getConnectionsClient(context).rejectConnection(endpointId))
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     };
