@@ -74,8 +74,7 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
     public void onConnectionResult(@NonNull String s, @NonNull ConnectionResolution connectionResolution) {
         switch (connectionResolution.getStatus().getStatusCode()) {
             case ConnectionsStatusCodes.STATUS_OK:
-                Payload bytesPayload = Payload.fromBytes("Connection established".getBytes());
-                Nearby.getConnectionsClient(context).sendPayload(s, bytesPayload);
+                Toast.makeText(context, "Connection Established", Toast.LENGTH_SHORT).show();
                 break;
             case ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED:
                 Toast.makeText(context, "Connection rejected", Toast.LENGTH_SHORT).show();
