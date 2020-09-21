@@ -25,6 +25,7 @@ public class NearbyAdvertise {
 
     public static void stopAdvertising(Context context, String endpointName) {
         Nearby.getConnectionsClient(context).stopAdvertising();
+        Nearby.getConnectionsClient(context).stopAllEndpoints();
         UiUtils.showToast(context, "Advertise Stopped ", endpointName);
     }
 

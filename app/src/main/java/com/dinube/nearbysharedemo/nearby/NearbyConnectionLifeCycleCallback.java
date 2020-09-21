@@ -53,7 +53,8 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
     public void onConnectionResult(@NonNull String s, @NonNull ConnectionResolution connectionResolution) {
         switch (connectionResolution.getStatus().getStatusCode()) {
             case ConnectionsStatusCodes.STATUS_OK:
-                Toast.makeText(context, "We're connected! Can now start sending and receiving data", Toast.LENGTH_SHORT).show();
+                Payload bytesPayload = Payload.fromBytes("We're connected! Can now start sending and receiving data".getBytes());
+                Nearby.getConnectionsClient(context).sendPayload(endpointId, bytesPayload);
                 break;
             case ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED:
                 Toast.makeText(context, "Connection rejected", Toast.LENGTH_SHORT).show();
@@ -91,7 +92,7 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
                         (DialogInterface dialog, int which) ->
                                 // The user confirmed, so we can accept the connection.
                                 Nearby.getConnectionsClient(context)
-                                        .acceptConnection(endpointId, new NearbyPayloadCallback()))
+                                        .acceptConnection(endpointId, new NearbyPayloadCallback(context)))
                 .setNegativeButton(
                         android.R.string.cancel,
                         (DialogInterface dialog, int which) ->
@@ -103,9 +104,17 @@ public class NearbyConnectionLifeCycleCallback extends ConnectionLifecycleCallba
 
     static class NearbyPayloadCallback extends PayloadCallback {
 
+        private Context context;
+
+        public NearbyPayloadCallback(Context context) {
+            this.context = context;
+        }
+
         @Override
         public void onPayloadReceived(@NonNull String s, @NonNull Payload payload) {
             byte[] receivedBytes = payload.asBytes();
+            String message = new String(receivedBytes);
+            UiUtils.showToast(context, message);
         }
 
         @Override
