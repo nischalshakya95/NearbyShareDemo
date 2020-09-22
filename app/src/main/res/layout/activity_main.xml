@@ -4,32 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_centerInParent="false"
+    android:layout_centerHorizontal="false"
+    android:layout_centerVertical="false"
     tools:context=".MainActivity">
 
     <Switch
         android:id="@+id/advertiseSwitch"
         android:layout_width="117dp"
         android:layout_height="43dp"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="276dp"
         android:text="@string/advertise"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.126"
+        app:layout_constraintVertical_bias="0.154"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <Switch
         android:id="@+id/discoverSwitch"
-        android:layout_width="101dp"
-        android:layout_height="42dp"
+        android:layout_width="114dp"
+        android:layout_height="44dp"
         android:layout_marginEnd="40dp"
         android:text="@string/discover"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.953"
+        app:layout_constraintHorizontal_bias="0.838"
         app:layout_constraintStart_toEndOf="@+id/advertiseSwitch"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.127"
+        app:layout_constraintVertical_bias="0.059"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -84,8 +87,8 @@
 
     <Button
         android:id="@+id/generateQRButton"
-        android:layout_width="114dp"
-        android:layout_height="54dp"
+        android:layout_width="131dp"
+        android:layout_height="53dp"
         android:text="@string/generate_qr"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -93,5 +96,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.558" />
+
+    <TextView
+        android:id="@+id/discoverNearbyshareTextView"
+        android:layout_width="203dp"
+        android:layout_height="39dp"
+        android:background="#FFFFFF"
+        android:gravity="center"
+        android:text="@string/discover_nearby_share_devices"
+        android:textColor="#232020"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.076"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.057" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,12 +1,13 @@
 <resources>
-    <string name="app_name">NearbyShareDemo</string>
+    <string name="app_name">Cashier Application</string>
     <string name="advertise">Advertise</string>
     <string name="discover">Discover</string>
-    <string name="stop_advertising">Stop Adversiting</string>
+    <string name="stop_advertising">Stop Advertising</string>
     <string name="stop_discovering">Stop Discovering</string>
     <string name="message">Message</string>
     <string name="send_message">Send Amount</string>
     <string name="endpoints">Endpoints</string>
     <string name="qr_image">QR Image</string>
     <string name="generate_qr">Generate QR</string>
+    <string name="discover_nearby_share_devices">Discover Nearby Share Device</string>
 </resources>

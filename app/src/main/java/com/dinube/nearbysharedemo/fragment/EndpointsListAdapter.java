@@ -57,5 +57,4 @@ public class EndpointsListAdapter extends RecyclerView.Adapter<EndpointsListAdap
             itemView.setOnClickListener(onClickListener);
         }
     }
-
 }
