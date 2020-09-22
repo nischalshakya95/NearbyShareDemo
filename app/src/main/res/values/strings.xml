@@ -7,4 +7,6 @@
     <string name="message">Message</string>
     <string name="send_message">Send Amount</string>
     <string name="endpoints">Endpoints</string>
+    <string name="qr_image">QR Image</string>
+    <string name="generate_qr">Generate QR</string>
 </resources>
