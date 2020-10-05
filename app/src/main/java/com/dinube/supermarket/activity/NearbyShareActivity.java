@@ -75,6 +75,9 @@ public class NearbyShareActivity extends AppCompatActivity {
         Button initiatePayment = findViewById(R.id.paymentInitiate);
         Button readQRButton = findViewById(R.id.scanQR);
         Button checkBalanceButton = findViewById(R.id.checkBalanceButton);
+        Button generateUskButton = findViewById(R.id.generateUSKButton);
+
+        UiUtils.showToast(context, getIntent().getStringExtra("authorizationCode"));
 
         qrScan = new IntentIntegrator(this);
 
@@ -97,6 +100,10 @@ public class NearbyShareActivity extends AppCompatActivity {
         checkBalanceButton.setOnClickListener(click -> {
             checkBalance();
         });
+
+        generateUskButton.setOnClickListener(click -> {
+            generateUsk();
+        });
     }
 
     @Override
@@ -113,6 +120,10 @@ public class NearbyShareActivity extends AppCompatActivity {
         }
     }
 
+    private void generateUsk() {
+
+    }
+
     private void checkBalance() {
         AfterBankAPIService afterBankAPIService = AfterBankRetrofit.getAfterBankAPIInstance();
         Call<AccountInformationResponseData> call = afterBankAPIService.getAccountInformation(TempVariables.SOURCE_IBAN_NUMBER);
@@ -120,7 +131,7 @@ public class NearbyShareActivity extends AppCompatActivity {
         call.enqueue(new Callback<AccountInformationResponseData>() {
             @Override
             public void onResponse(Call<AccountInformationResponseData> call, Response<AccountInformationResponseData> response) {
-                assert  response.body() != null;
+                assert response.body() != null;
                 AccountInformationResponse accountInformationResponse = response.body().getT();
 
                 balanceView.setText(String.valueOf(accountInformationResponse.getBalance()));

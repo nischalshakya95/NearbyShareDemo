@@ -1,6 +1,7 @@
 package com.dinube.supermarket.dinube.retrofit;
 
 import com.dinube.supermarket.dinube.service.DinubeAPIService;
+import com.dinube.supermarket.utils.TempVariables;
 
 import java.util.concurrent.TimeUnit;
 
@@ -10,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DinubeRetrofit {
 
-    private final static String BASE_URL = "https://5ed9b91b72c9.ngrok.io/";
+    private final static String BASE_URL = TempVariables.DINUBE_API_BASE_URL;
 
     public static DinubeAPIService getDinubeAPIInstance() {
         Retrofit retrofit = new Retrofit.Builder()

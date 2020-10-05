@@ -12,4 +12,5 @@
     <string name="account_balance">Account Information</string>
     <string name="iban_number">""</string>
     <string name="balance">""</string>
+    <string name="generate_usk">Generate USK</string>
 </resources>

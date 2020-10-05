@@ -2,7 +2,7 @@ package com.dinube.supermarket.utils;
 
 public class TempVariables {
 
-    public static String DINUBE_API_BASE_URL = "https://ece9ce26ba1d.ngrok.io";
+    public static String DINUBE_API_BASE_URL = "https://90b20217b08a.ngrok.io";
 
     public static String  AFTER_BANK_BASE_URL = "https://4c1fb555c032.ngrok.io";
 

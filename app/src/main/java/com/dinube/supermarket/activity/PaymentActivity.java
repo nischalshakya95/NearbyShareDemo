@@ -22,17 +22,20 @@ public class PaymentActivity extends AppCompatActivity {
         payWithNearbyShareButton = findViewById(R.id.payUsingNearbyShareButton);
         payWithQRScannerButton = findViewById(R.id.payUsingQRScannerButton);
 
+        String authorizationToken = getIntent().getStringExtra("authorizationCode");
+
         payWithNearbyShareButton.setOnClickListener(l -> {
-            initializePayWithNearby();
+            initializePayWithNearby(authorizationToken);
         });
 
         payWithQRScannerButton.setOnClickListener(click -> {
-            initializePayWithNearby();
+            initializePayWithNearby(authorizationToken);
         });
     }
 
-    private void initializePayWithNearby() {
+    private void initializePayWithNearby(String authorizationCode) {
         Intent intent = new Intent(getApplicationContext(), NearbyShareActivity.class);
+        intent.putExtra("authorizationCode", authorizationCode);
         startActivity(intent);
     }
 }
