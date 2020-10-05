@@ -70,10 +70,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 LoginResponse loginResponse = response.body();
 
-                System.out.println(loginResponse.toString());
-
                 Intent intent = new Intent(getApplicationContext(), PaymentActivity.class);
-                intent.putExtra("authorizationCode", loginResponse.getAuthorizationToken());
+                assert loginResponse != null;
+                intent.putExtra("authorizationToken", loginResponse.getAuthorizationToken());
 
                 startActivity(intent);
                 UiUtils.showToast(context, "Login Successful");

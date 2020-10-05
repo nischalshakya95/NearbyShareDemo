@@ -23,6 +23,10 @@ import com.dinube.supermarket.afterbank.response.PaymentInitiateResponse;
 import com.dinube.supermarket.afterbank.response.PaymentInitiateResponseData;
 import com.dinube.supermarket.afterbank.retrofit.AfterBankRetrofit;
 import com.dinube.supermarket.afterbank.service.AfterBankAPIService;
+import com.dinube.supermarket.dinube.model.GenerateUskRequest;
+import com.dinube.supermarket.dinube.model.GenerateUskResponse;
+import com.dinube.supermarket.dinube.retrofit.DinubeRetrofit;
+import com.dinube.supermarket.dinube.service.DinubeAPIService;
 import com.dinube.supermarket.nearbyshare.NearbyAdvertise;
 import com.dinube.supermarket.utils.TempVariables;
 import com.dinube.supermarket.utils.UiUtils;
@@ -58,6 +62,8 @@ public class NearbyShareActivity extends AppCompatActivity {
 
     private TextView balanceView;
 
+    private TextView uskView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,13 +77,12 @@ public class NearbyShareActivity extends AppCompatActivity {
         textView = findViewById(R.id.amountPlainText);
         ibanNumberView = findViewById(R.id.ibanNumber);
         balanceView = findViewById(R.id.balanceView);
+        uskView = findViewById(R.id.uskView);
 
         Button initiatePayment = findViewById(R.id.paymentInitiate);
         Button readQRButton = findViewById(R.id.scanQR);
         Button checkBalanceButton = findViewById(R.id.checkBalanceButton);
         Button generateUskButton = findViewById(R.id.generateUSKButton);
-
-        UiUtils.showToast(context, getIntent().getStringExtra("authorizationCode"));
 
         qrScan = new IntentIntegrator(this);
 
@@ -121,7 +126,23 @@ public class NearbyShareActivity extends AppCompatActivity {
     }
 
     private void generateUsk() {
+        DinubeAPIService dinubeAPIService = DinubeRetrofit.getDinubeAPIInstance();
+        GenerateUskRequest generateUskRequest = new GenerateUskRequest("34000000000", getIntent().getStringExtra("authorizationToken"), 0, true);
+        Call<GenerateUskResponse> call = dinubeAPIService.generateUsk(generateUskRequest);
 
+        call.enqueue(new Callback<GenerateUskResponse>() {
+            @Override
+            public void onResponse(Call<GenerateUskResponse> call, Response<GenerateUskResponse> response) {
+                assert response.body() != null;
+                GenerateUskResponse generateUskResponse = response.body();
+                uskView.setText(generateUskResponse.getNfcUsk());
+            }
+
+            @Override
+            public void onFailure(Call<GenerateUskResponse> call, Throwable t) {
+                UiUtils.showToast(context, t.getMessage());
+            }
+        });
     }
 
     private void checkBalance() {
