@@ -22,9 +22,12 @@ public class NearbyConnectionLifeCycleCallBack extends ConnectionLifecycleCallba
 
     private PayloadCallback payloadCallback;
 
-    public NearbyConnectionLifeCycleCallBack(Context context, PayloadCallback payloadCallback) {
+    private String nfcUsk;
+
+    public NearbyConnectionLifeCycleCallBack(Context context, PayloadCallback payloadCallback, String nfcUsk) {
         this.context = context;
         this.payloadCallback = payloadCallback;
+        this.nfcUsk = nfcUsk;
     }
 
     @Override
@@ -52,7 +55,7 @@ public class NearbyConnectionLifeCycleCallBack extends ConnectionLifecycleCallba
     public void onConnectionResult(@NonNull String endpointId, @NonNull ConnectionResolution connectionResolution) {
         switch (connectionResolution.getStatus().getStatusCode()) {
             case ConnectionsStatusCodes.STATUS_OK:
-                Payload bytesPayload = Payload.fromBytes("We're connected! Can now start sending and receiving data".getBytes());
+                Payload bytesPayload = Payload.fromBytes(nfcUsk.getBytes());
                 Nearby.getConnectionsClient(context).sendPayload(endpointId, bytesPayload);
                 break;
             case ConnectionsStatusCodes.STATUS_CONNECTION_REJECTED:

@@ -13,10 +13,10 @@ public class NearbyAdvertise {
     // Note: SERVICE_ID MUST BE SAME OF START DISCOVERY SECTION OF NEARBY SHARE ELSE THE DEVICE WONT BE DISCOVERABLE
     private static final String SERVICE_ID = "com.dinube.nearbysharedemo";
 
-    public static void startAdvertising(Context context, String endpointName, PayloadCallback payloadCallback) {
+    public static void startAdvertising(Context context, String endpointName, PayloadCallback payloadCallback, String nfcUsk) {
         AdvertisingOptions advertisingOptions = new AdvertisingOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build();
         Nearby.getConnectionsClient(context).startAdvertising(endpointName, SERVICE_ID,
-                new NearbyConnectionLifeCycleCallBack(context, payloadCallback), advertisingOptions)
+                new NearbyConnectionLifeCycleCallBack(context, payloadCallback, nfcUsk), advertisingOptions)
                 .addOnSuccessListener((Void unused) -> {
                     UiUtils.showToast(context, "Advertising " + endpointName);
                 })

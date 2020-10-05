@@ -88,7 +88,7 @@ public class NearbyShareActivity extends AppCompatActivity {
 
         advertiseSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                NearbyAdvertise.startAdvertising(context, endpointName, new NearbyPayloadCallback());
+                NearbyAdvertise.startAdvertising(context, endpointName, new NearbyPayloadCallback(), uskView.getText().toString());
             } else {
                 NearbyAdvertise.stopAdvertising(context, endpointName);
             }

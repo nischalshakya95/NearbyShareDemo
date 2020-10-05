@@ -15,7 +15,7 @@ public class NearbyDiscover {
     public static void startDiscovering(Context context, String endpointName, RecyclerView recyclerView, PayloadCallback payloadCallback) {
         DiscoveryOptions discoveryOptions = new DiscoveryOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build();
         Nearby.getConnectionsClient(context).startDiscovery("com.dinube.supermarket",
-                new NearbyEndPointDiscoveryCallBack(context, endpointName, new NearbyConnectionLifeCycleCallBack(context, payloadCallback)), discoveryOptions)
+                new NearbyEndPointDiscoveryCallBack(context, endpointName, new NearbyConnectionLifeCycleCallBack(context, payloadCallback, null)), discoveryOptions)
                 .addOnSuccessListener((Void unused) -> {
                     UiUtils.showToast(context, "Discovering from " + endpointName);
                 })
